@@ -15,11 +15,11 @@
 
 """ Object Server for Swift """
 from __future__ import with_statement
-from mountFiles import *
+from client import *
 import cPickle as pickle
 import errno
 import os
-import subprocess
+from subprocess import *
 import time
 import traceback
 from datetime import datetime
@@ -589,19 +589,20 @@ class ObjectController(object):
             device, partition, account, container, obj = \
                 split_path(unquote(request.path), 5, 5, True)
             validate_device_partition(device, partition)
-	    percent = check('/dev/sdh')
-	    if(percent > 8):
-		  resArr = []
-                  for i in List:
-      # res = check_call(['sudo','mount','-t','xfs','-L',i,'/srv/node/%s'%(i)])
-                      res = os.system('mount -t xfs -L %s /srv/node/%s'%(i,i))
-                      resArr.append(res)
-		  self.logger.info(_('mounted result:%s'%(resArr)))
-		  flush()
-		  res1=0
-		  res1=os.system('rm -rf /srv/node/ssd/objects/*')
-		  self.logger.info('rm result:%s'%(res1))
-		  check('/dev/sdh')
+	    make_conn()
+		#  resArr = []
+                 # for i in List:
+                  #    res = Popen(['sudo','mount','-t','xfs','-L',i,'/srv/node/%s'%(i)],shell=False,stdin=PIPE,stdout=PIPE,stderr=PIPE)
+		   #   res.communicate('swift')
+                     # res = os.system('mount -t xfs -L %s /srv/node/%s'%(i,i))
+                    #  resArr.append(res)
+		  #self.logger.info(_('mounted result:%s'%(resArr)))
+		 # flush()
+		 # res1=0
+		  #res1=os.system('rm -rf /srv/node/ssd/objects/*')
+		 # time.sleep(3)
+		 # self.logger.info('rm result:%s'%(res1))
+		  #check('/dev/sdh')
 	    for i in List:
 		dict_info = pickle.load(open('/usr/bin/device.p','rb'))
 		if device == i:

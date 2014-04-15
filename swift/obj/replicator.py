@@ -411,6 +411,12 @@ class ObjectReplicator(Daemon):
 
         :param job: a dict containing info about the partition to be replicated
         """
+	flag = False
+	f = open('/usr/bin/spinDownDevices','r')
+        Str = f.read()
+        List = Str.split('\n')
+        List.remove('')
+        f.close()
         self.replication_count += 1
         self.logger.increment('partition.update.count.%s' % (job['device'],))
         begin = time.time()
@@ -462,6 +468,11 @@ class ObjectReplicator(Daemon):
                     suffixes = [suffix for suffix in local_hash if
                                 local_hash[suffix] !=
                                 remote_hash.get(suffix, -1)]
+		    for i in List:
+			if node['device'] == i:
+				flag = True
+		    if flag == True:
+			continue
                     self.rsync(node, job, suffixes)
                     with Timeout(self.http_timeout):
                         conn = http_connect(
